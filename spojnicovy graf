@@ -1,0 +1,151 @@
+-
+
+
+
+
+
+
+
+
+
+
+
+
+
+#graf
+{
+  background-color: blue;
+  border:6px solid;
+}
+
+
+
+
+
+
+
+
+
+/*
+________
+<button onClick="odeslat_data()">Odeslat</button>
+<input id="vstup" placeholder="Zadejte číslo"><br>
+<button onClick="smazat_polozku()">Smazat položku</button>
+<input id="mazani" placeholder="Pozice mazaného čísla"><br>
+
+<canvas id="graf" width="1000" height="400"></canvas><br>
+
+<button onClick = "vymazat_data()">Vymazat data</button>
+
+<p id = "zdrojova_cisla"></p>
+<p id = "maximum"></p>
+<p id = "minimum"></p>
+<p id = "prumer"></p>
+
+
+_____________
+
+var cisla=[];
+
+function odeslat_data()
+{
+  if(Number(document.getElementById("vstup").value<0) ||  Number(document.getElementById("vstup").value>400))
+    {
+      alert ("Číslo musí být větší než 0 a menší než 400");
+    }
+  else
+    {
+      cisla.push(document.getElementById("vstup").value);
+    }
+  vykreslit()
+}
+
+function vykreslit()
+{
+  let a;
+  let maximum;
+  let minimum;
+  let obsah=document.getElementById("graf").getContext("2d");
+  
+  obsah.clearRect(0,0,1000,400);
+  obsah.beginPath();
+  obsah.moveTo(0,400);
+  obsah.closePath();
+  
+  maximum = Math.max(...cisla);
+  minimum = Math.min(...cisla);
+  
+  for(let i = 0; i < cisla.length; i++)
+    {
+      if(i==0)
+        {
+          a=50;
+        }
+      obsah.lineTo(a, 400 - cisla[i]);
+      obsah.stroke();
+      obsah.beginPath();
+      obsah.arc(a, 400 - cisla[i], 4, 0, 2 * Math.PI);
+      obsah.stroke();
+      obsah.fillStyle = "black";
+      obsah.fill();
+      obsah.moveTo(a, 400 - cisla[i]);
+    
+      if(minimum == cisla[i])
+      {
+      obsah.beginPath();
+      obsah.arc(a, 400 - cisla[i], 4, 0, 2 * Math.PI);
+      obsah.stroke();
+      obsah.fillStyle = "#F50211";
+      obsah.fill();
+      obsah.moveTo(a, 400 - cisla[i]);
+      document.getElementById("minimum").innerHTML = "Minimum: " + minimum;
+      }
+    
+      if(maximum == cisla[i])
+      {
+      obsah.beginPath();
+      obsah.arc(a, 400 - cisla[i], 4, 0, 2 * Math.PI);
+      obsah.stroke();
+      obsah.fillStyle = "#22E00C";
+      obsah.fill();
+      obsah.moveTo(a, 400 - cisla[i]);
+      document.getElementById("maximum").innerHTML = "Maximum: " + maximum;
+      }
+     a=a+50;
+    }
+  document.getElementById("zdrojova_cisla").innerHTML="Zdrojová čísla " + cisla.join("*");
+  prumer();
+}
+
+function prumer()
+{
+  let prumer = 0;
+  for (let i = 0; i < cisla.length; i++)
+    {
+    prumer = prumer + Number(cisla[i]);
+    }
+    prumer = prumer / cisla.length;
+    document.getElementById("prumer").innerHTML = "Půrměr čísel je: " + prumer;
+}
+
+function vymazat_data()
+{
+  let obsah = document.getElementById("graf").getContext("2d");
+  cisla = [];
+  obsah.clearRect(0,0,1000,400);
+  
+  document.getElementById("vstup").value="";
+  document.getElementById("mazani").value="";
+  
+  document.getElementById("zdrojova_cisla").innerHTML ="";
+  document.getElementById("maximum").innerHTML="";
+  document.getElementById("minimum").innerHTML="";
+  document.getElementById("prumer").innerHTML="";
+}
+
+function smazat_polozku()
+{
+  var polozka = document.getElementById("mazani").value;
+  cisla.splice((polozka-1),1);
+  vykreslit();
+}
